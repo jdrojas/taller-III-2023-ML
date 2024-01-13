@@ -1,0 +1,18 @@
+\frametitle{Usando Scikit Learn}
+Estos son los comandos básicos para utilizar un árbol con Scikit learn
+	\rule{\textwidth}{1pt}
+	\scriptsize
+	\begin{minted}{python}
+		 from sklearn import tree
+		 X = # Lista con los features (lista de listas)
+		 Y = # Lista con los labels
+		 # Se define la variable que tendrá el árbol
+		 clf = tree.DecisionTreeClassifier()
+		 # Se calcula el árbol
+		 clf = clf.fit(X, Y)
+		 # Se utiliza el árbol para predecir el label de un dato nuevo
+		 clf.predict_proba(X0)
+		 # Se dibuja el árbol
+		 tree.plot_tree(clf)
+	\end{minted}
+	\rule{\textwidth}{1pt}

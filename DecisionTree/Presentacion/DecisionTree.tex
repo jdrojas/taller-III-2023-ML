@@ -1,0 +1,208 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{default}
+\usepackage{svg}
+\usepackage[spanish]{babel}
+\usepackage{bm}
+\usepackage{minted}
+\graphicspath{{./figuras/}}
+
+\title{Decision Tree Learning}
+\author{José David Rojas}
+\date{}
+\begin{document}
+\begin{frame}[plain]
+    \maketitle
+\end{frame}
+\begin{frame}{Definición}
+	\begin{itemize}
+		\item Un árbol de decisión (DT) es un grafo no cíclico que se utiliza para tomar decisiones (clasificar)
+		\item En cada nodo (rama) del grafo se evalúa uno de los \textit{features}. Si el resultado de la evaluación es cierto (o está debajo de un umbral), se sigue la rama de la izquierda, si no se va a la derecha.
+	\end{itemize}
+	\begin{center}
+		\includesvg[scale = 0.5]{DT01}
+	\end{center}
+\end{frame}
+%
+\begin{frame}{Definición}
+	\begin{itemize}
+		\item Por lo tanto, los DT son un modelo no paramétrico.
+		\item Para crear el DT, se \alert{intenta} optimizar el promedio de la máxima verosimilitud:
+			\begin{equation*}
+				\frac{1}{N} \sum_{i=1}^{N}\left( y_i \ln{f_{ID3}(\bm{x}_i)} + (1-y_i) \ln{(1-f_{ID3}(\bm{x}_i))}\right) 
+			\end{equation*}
+		donde $f_{ID3}$ es un DT y $f_{ID3}(\bm{x}) \stackrel{\text{def}}{=} Pr(y=1|x)$
+	\end{itemize}
+\end{frame}
+%
+\begin{frame}{Construcción}
+	\begin{itemize}
+		\item Para construir el árbol, en cada nodo de decisión, se intenta minimizar la entropía de la información.
+		\item La entropía de un conjunto $\cal{S}$ viene dada por:
+			\begin{equation*}
+				H(S) \stackrel{\text{def}}{=} -f_{ID3}^{S} \log_2 (f_{ID3}^{S}) - (1-f_{ID3}^{S}) \log_2 (1-f_{ID3}^{S})
+			\end{equation*}
+		\item Y si un grupo se divide en dos, la entropía es la suma ponderada de cada subconjunto:
+			\begin{equation*}
+				H(S_-, S_+) \stackrel{\text{def}}{=} \frac{|S_-|}{|S|}H(S_-) + \frac{|S_+|}{|S|}H(S_+)
+			\end{equation*}
+	\end{itemize}
+\end{frame}
+%
+\begin{frame}{Ejemplo}
+	Consideremos los siguientes datos:
+	\begin{columns}
+		\begin{column}{0.5\columnwidth}
+			Atributos
+			\begin{itemize}
+				\item Edad: viejo (v), media-vida(m), nuevo (nv)
+				\item Competencia: no(n), sí(s)
+				\item Tipo: software (swr), hardware (hwr)
+			\end{itemize}
+		\end{column}
+	%
+		\begin{column}{0.5\columnwidth}
+			\begin{tabular}{cccc}
+				Edad	&  Competencia & Tipo	& Ganancia\\
+				\hline
+				v	& s & swr & baja\\
+				v	& n & swr & baja\\
+				v	& n & hwr & baja\\
+				m	& s & swr & baja\\
+				m	& s & hwr & baja\\
+				m	& n & hwr & sube\\
+				m	& n & swr & sube\\
+				nv	& s & swr & sube\\
+				nv	& n & hwr & sube\\
+				nv	& n & swr & sube\\
+				\hline
+			\end{tabular}
+		\end{column}
+	\end{columns}
+\end{frame}
+%
+\begin{frame}{Cálculo de las entropías}
+	Primero se tiene que probar todos los features para ver cuál tiene mayor ganancia de información (reduce la entropía)
+	Entropía total:
+	\begin{align*}
+		H(S) 	&= \text{Entropía de los casos baja} + \text{Entropía de los casos sube}\\
+				&= -\frac{5}{10}*\log_2(\frac{5}{10}) - \frac{5}{10}*\log_2(\frac{5}{10})\\
+				&= 1
+	\end{align*}
+	\begin{center}
+		Máxima entropía
+	\end{center}
+\end{frame}
+%
+\begin{frame}{Decidiendo con las edades}
+	\begin{center}
+		\includesvg[width = 0.8\columnwidth]{DT02}
+	\end{center}
+\end{frame}
+%
+\begin{frame}{Decidiendo con la competencia}
+	\begin{center}
+		\includesvg[width = 0.8\columnwidth]{DT03}
+	\end{center}
+\end{frame}
+%
+\begin{frame}{Decidiendo con el tipo}
+	\begin{center}
+		\includesvg[width = 0.8\columnwidth]{DT04}
+	\end{center}
+\end{frame}
+%
+\begin{frame}{Primer nivel}
+	\begin{itemize}
+		\item Concluimos que lo que nos da la máxima ganancia de información es primero decidir por edades, eso nos deja dos nodos hoja y un nodo rama que debemos volver a separar
+	\end{itemize}
+\end{frame}
+%
+\begin{frame}{Segundo nivel por competencia}
+		\begin{center}
+		\includesvg[width = 0.8\columnwidth]{DT05}
+	\end{center}
+\end{frame}
+%
+\begin{frame}{Final}
+	\begin{columns}
+		\begin{column}{0.3\columnwidth}
+			\begin{itemize}
+				\item Con esto ya se clasificaron todos los datos, puesto que terminamos solo con nodos hojas
+			\end{itemize}
+		\end{column}
+		%
+		\begin{column}{0.6\columnwidth}
+			\begin{center}
+				\includesvg[width = \columnwidth]{DT06}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+%
+\begin{frame}{Con valores numéricos}
+	\only<1>{
+		\begin{center}
+			\includesvg[width = 0.8\columnwidth]{DT07}
+		\end{center}
+	}
+	%
+	\only<2>{
+		\begin{center}
+			\includesvg[width = 0.8\columnwidth]{DT08}
+		\end{center}
+	}
+	%
+	\only<3>{
+		\begin{center}
+			\includesvg[width = 0.8\columnwidth]{DT09}
+		\end{center}
+	}
+	%
+	%
+	\only<4>{
+		\begin{center}
+			\includesvg[width = 0.8\columnwidth]{DT10}
+		\end{center}
+	}
+\end{frame}
+%
+\begin{frame}{Resultado final con valores numéricos}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\includesvg[width = \columnwidth, pretex = \scriptsize]{DT11}
+			\end{center}
+		\end{column}
+	%
+	\begin{column}{0.5\textwidth}
+		\begin{center}
+			\includesvg[width = \columnwidth]{DT12}
+		\end{center}
+	\end{column}
+	\end{columns}
+\end{frame}
+%
+\begin{frame}[fragile]{Usando Scikit Learn}
+	Estos son los comandos básicos para utilizar un árbol con Scikit learn
+	\rule{\textwidth}{1pt}
+	\scriptsize
+	\begin{minted}{python}
+		 from sklearn import tree
+		 X = # Lista con los features (lista de listas)
+		 Y = # Lista con los labels
+		 # Se define la variable que tendrá el árbol
+		 clf = tree.DecisionTreeClassifier()
+		 # Se calcula el árbol
+		 clf = clf.fit(X, Y)
+		 # Se utiliza el árbol para predecir el label de un dato nuevo
+		 clf.predict_proba(X0)
+		 # Se dibuja el árbol
+		 tree.plot_tree(clf)
+	\end{minted}
+	\rule{\textwidth}{1pt}
+\end{frame}
+%
+\begin{frame}[plain]
+	\maketitle
+\end{frame}
+\end{document}

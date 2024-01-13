@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+		 \PYG{k+kn}{from} \PYG{n+nn}{sklearn} \PYG{k+kn}{import} \PYG{n}{tree}
+		 \PYG{n}{X} \PYG{o}{=} \PYG{c+c1}{\PYGZsh{} Lista con los features (lista de listas)}
+		 \PYG{n}{Y} \PYG{o}{=} \PYG{c+c1}{\PYGZsh{} Lista con los labels}
+		 \PYG{c+c1}{\PYGZsh{} Se define la variable que tendrá el árbol}
+		 \PYG{n}{clf} \PYG{o}{=} \PYG{n}{tree}\PYG{o}{.}\PYG{n}{DecisionTreeClassifier}\PYG{p}{()}
+		 \PYG{c+c1}{\PYGZsh{} Se calcula el árbol}
+		 \PYG{n}{clf} \PYG{o}{=} \PYG{n}{clf}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{X}\PYG{p}{,} \PYG{n}{Y}\PYG{p}{)}
+		 \PYG{c+c1}{\PYGZsh{} Se utiliza el árbol para predecir el label de un dato nuevo}
+		 \PYG{n}{clf}\PYG{o}{.}\PYG{n}{predict\PYGZus{}proba}\PYG{p}{(}\PYG{n}{X0}\PYG{p}{)}
+		 \PYG{c+c1}{\PYGZsh{} Se dibuja el árbol}
+		 \PYG{n}{tree}\PYG{o}{.}\PYG{n}{plot\PYGZus{}tree}\PYG{p}{(}\PYG{n}{clf}\PYG{p}{)}
+\end{Verbatim}
